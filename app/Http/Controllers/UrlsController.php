@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -26,8 +27,7 @@ class UrlsController extends Controller
         $url = null;
 
         if ($request->has('url')) {
-            $url = Url::whereKey($request->get('url'))->get()->toArray();
-            $url = array_shift($url);
+            $url = Url::whereKey($request->get('url'))->first();
         }
 
         return view('url.index', [
@@ -81,29 +81,26 @@ class UrlsController extends Controller
      * Display the specified resource.
      *
      * @param string $code
-     * @return RedirectResponse|\Illuminate\Routing\Redirector
+     * @return RedirectResponse|Redirector
      */
     public function show($code)
     {
-        $url = Url::query()->where(['short_code' => $code])->get()->toArray();
-        $data = array_shift($url);
+        $url = Url::query()->where(['short_code' => $code])->first();
 
-        if (empty($data))
-        {
+        if (empty($url)) {
             return redirect()->route('url.index')
                 ->with('error', 'Проверьте правильность кода');
         }
 
         Url::where(['short_code' => $code])
             ->update([
-                'url' => $data['url'],
-                'short_code' => $data['short_code'],
-                'counter' => $data['counter'] + 1,
+                'url' => $url->url,
+                'short_code' => $url->short_code,
+                'counter' => $url->counter + 1,
                 'updated_at' => now(),
             ]);
 
-
-        return redirect($data['url']);
+        return redirect($url->url);
     }
 
     /**

@@ -32,13 +32,13 @@
                     </button>
                 </form>
 
-                    @if (!empty($url['id']))
+                @if (!empty($url->id))
                     <div>
-                        <a class="nav-link" href="{{ route('url.show' , ['code' => $url['short_code']]) }}">
-                            <span>url/{{$url['short_code']}}</span>
+                        <a class="nav-link" href="{{ route('url.show' , ['code' => $url->short_code]) }}">
+                            <span>url/{{$url->short_code}}</span>
                         </a>
                     </div>
-                    @endif
+                @endif
             </div>
         </div>
     </div>
