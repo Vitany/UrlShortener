@@ -32,7 +32,7 @@ php artisan migrate
 npm install
 ````
 
-9. Build
+8. Build
 
 ````
 npm run watch
